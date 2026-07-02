@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do Sidebar</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+   }
+
+body{
+    background:#040c18;
+    overflow-x:hidden;
+}
+
+.sidebar{
+    width:280px;
+    height:100vh;
+    position:fixed;
+    left:0;
+    top:0;
+    background:rgba(8,15,30,.9);
+    border-right:1px solid rgba(255,255,255,.05);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    color:#00f5c4;
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.logo i{
+    font-size:24px;
+}
+
+.menu{
+    list-style:none;
+}
+
+.menu li{
+    margin-bottom:4px;
+}
+
+.menu a{
+    text-decoration:none;
+    color:#e5e7eb;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 15px;
+    border-radius:18px;
+    transition:.3s;
+    font-size:13px;
+}
+
+.menu a:hover{
+    background:rgba(0,245,196,.1);
+}
+
+.left{
+    display:flex;
+    align-items:center;
+}
+
+.left i{
+    width:25px;
+    margin-right:12px;
+}
+
+.count{
+    width:34px;
+    height:34px;
+    background:rgba(255,255,255,.05);
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:14px;
+}
+
+.active{
+    background:rgba(0,245,196,.15);
+    color:#00f5c4 !important;
+}
+
+.menu a.active{
+    color:#00f5c4 !important;
+}
+
+.menu a.active i{
+    color:#00f5c4 !important;
+}
+
+.dark-box{
+    margin-top:auto;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.05);
+    padding:18px 20px;
+    border-radius:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+}
+
+.toggle{
+    width:52px;
+    height:28px;
+    background:#00b894;
+    border-radius:30px;
+    position:relative;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+/* circle */
+.toggle::before{
+    content:"";
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:white;
+    position:absolute;
+    top:3px;
+    left:3px;   /* IMPORTANT FIX */
+    transition:0.3s;
+}
+
+/* ON state */
+.toggle.active{
+    background:#ccc;
+}
+
+.toggle.active::before{
+    left:27px;   /* move right */
+}
+
+body.light{
+    background:#f4f7fb;
+}
+
+body.light .sidebar{
+    background:#ffffff;
+    border-right:1px solid #e5e7eb;
+}
+
+body.light .menu a{
+    color:#111827;
+}
+
+body.light .menu a:hover{
+    background:rgba(15,157,154,0.1);
+}
+
+body.light .dark-box{
+    background:#f1f5f9;
+    color:#111827;
+}
+
+body.light .count{
+    background:#e5e7eb;
+    color:#111827;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-left:280px;
+    width:calc(100% - 280px);
+    padding:15px 25px; /* pehle 20px 30px tha */
+    margin-bottom:20px;
+}
+
+
+.header-left h1{
+    color:#fff;
+    font-size:28px;
+    margin-bottom:5px;
+}
+
+.header-left p{
+    color:#b0b0b0;
+    font-size:14px;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.icon-box{
+    width:45px;
+    height:60px;
+    background:#08111f;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    position:relative;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.icon-box i{
+    color:white;
+    font-size:16px;
+}
+
+.badge{
+    position:absolute;
+    top:-5px;
+    right:-2px;
+    width:18px;
+    height:18px;
+    background:#00d1a7;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:10px;
+    font-weight:600;
+}
+
+.profile{
+    position:relative;
+}
+
+.profile img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.online{
+    width:15px;
+    height:15px;
+    background:#00d26a;
+    border-radius:50%;
+    position:absolute;
+    right:2px;
+    bottom:5px;
+    border:2px solid #08111f;
+}
+
+.task-section{
+    margin-left:280px;
+    padding:0 20px;
+    display:flex;
+    gap:20px;
+ }  
+
+.add-task-box{
+    width:100%;
+    max-width:700px;
+    height:72px;
+
+    background:rgba(8,17,31,.85);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:18px;
+
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+    gap:15px;
+}
+
+.add-task-box input{
+    flex:1;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:white;
+    font-size:18px;
+}
+
+.add-task-box input::placeholder{
+    color:#8a94a6;
+}
+
+.date-btn{
+    width:50px;
+    height:50px;
+    border:none;
+    border-radius:14px;
+    background:rgba(255,255,255,.04);
+    color:white;
+    cursor:pointer;
+}
+
+.date-btn i{
+    font-size:18px;
+}
+
+.add-task-box select{
+    width:140px;
+    height:50px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    color:white;
+    padding:0 15px;
+    outline:none;
+}
+
+.add-task-box option{
+    background:#08111f;
+}
+
+.add-btn{
+    width:140px;
+    height:50px;
+    border:none;
+    border-radius:14px;
+    background:#00d1a7;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.progress-space{
+    width:300px; /* Task Progress ke liye reserved */
+}
+
+.right-panel{
+    width:300px;
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+/* TASK PROGRESS */
+
+.progress-card{
+    background:#08111f;
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:18px;
+    padding:18px;
+    height:290px; /* pehle 370px tha */
+}
+
+.progress-card h3{
+    color:white;
+    font-size:18px;
+    margin-bottom:20px;
+}
+
+.circle-progress{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    margin:auto;
+
+    background:
+    conic-gradient(
+        #00d1a7 0% 75%,
+        rgba(255,255,255,.1) 75% 100%
+    );
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    position:relative;
+}
+
+.circle-progress::before{
+    content:"";
+    position:absolute;
+    width:78px;
+    height:78px;
+    border-radius:50%;
+    background:#08111f;
+}
+
+.circle-progress span{
+    position:relative;
+    z-index:2;
+    color:white;
+    font-size:24px;
+    font-weight:700;
+}
+
+.progress-info{
+    text-align:center;
+    margin-top:15px;
+}
+
+.progress-info p{
+    color:#9ca3af;
+}
+
+.progress-info strong{
+    color:white;
+    font-size:20px;
+}
+
+/* UPCOMING TASKS */
+
+.upcoming-card{
+    background:#08111f;
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:18px;
+    padding:20px;
+    min-height:220px;
+    margin-top:20px; /* add space */
+}
+
+.upcoming-card h3{
+    color:white;
+    margin-bottom:18px;
+}
+
+.upcoming-task{
+    background:rgba(255,255,255,.03);
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:12px;
+}
+
+.upcoming-task h4{
+    color:white;
+    font-size:15px;
+    margin-bottom:5px;
+}
+
+.upcoming-task span{
+    color:#9ca3af;
+    font-size:13px;
+}
+
+.task-stats{
+    margin-top:20px;
+    padding:0 10px; /* add this */
+    display:flex;
+    gap:12px;
+}
+
+.stat-box{
+    flex:1;
+    background:#0f1b2d;
+    border-radius:12px;
+    padding:10px 5px;
+    min-width:0;
+    text-align:center;
+}
+
+.stat-box span{
+    display:block;
+    font-size:11px;
+    color:#9ca3af;
+    margin-bottom:5px;
+}
+
+.stat-box h4{
+    font-size:16px;
+    color:white;
+}
+ 
+.stat-box{
+    background:#0f1b2d;
+    border-left:4px solid #00d1a7;
+}
+.stat-box i{
+    font-size:18px;
+    color:white;
+    margin-bottom:6px;
+    display:block;
+}
+
+.stat-box:hover i{
+    color:white;
+}
+
+.task-filters{
+    margin-top:20px;
+    display:flex;
+    gap:15px;
+}
+
+.filter-btn{
+    border:none;
+    padding:12px 22px;
+    border-radius:30px;
+    background:#08111f;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+    font-size:15px;
+}
+
+.filter-btn:hover{
+    background:#0d1a2c;
+}
+
+.filter-btn.active{
+    background:#00d1a7;
+    color:white;
+}
+
+.left-content{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+#task-list{
+    margin-top:20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.task-item{
+    background:#08111f;
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    border-left:4px solid #00d1a7;
+}
+
+.task-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:#08111f;
+    padding:15px 20px;
+    border-radius:14px;
+    margin-bottom:12px;
+
+    color:white;
+}
+
+.task-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.priority{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.priority.high{
+    background:#ff4d4d;
+    color:white;
+}
+
+.priority.medium{
+    background:#f39c12;
+    color:white;
+}
+
+.priority.low{
+    background:#00d1a7;
+    color:white;
+}
+
+.delete-btn{
+    border:none;
+    background:#ff3b30;
+    color:white;
+    padding:7px 12px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.delete-btn:hover{
+    opacity:.85;
+}
+
+.settings-card{
+    background:#08111f;
+    color:white;
+    padding:25px;
+    border-radius:18px;
+    margin-top:25px;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.setting-group{
+    margin-bottom:25px;
+}
+
+.setting-group h4{
+    color:#00d1a7;
+    margin-bottom:12px;
+}
+
+.setting-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.setting-item button{
+    background:#00d1a7;
+    color:white;
+    border:none;
+    padding:8px 15px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.setting-item select{
+    background:#0f1b2d;
+    color:white;
+    border:none;
+    padding:8px;
+    border-radius:8px;
+}
+
+.settings-card{
+    display:none;
+    background:#08111f;
+    color:white;
+    padding:25px;
+    border-radius:18px;
+    margin-top:25px;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+/* LIGHT MODE */
+
+body.light .header-left h1{
+    color:#111827;
+}
+
+body.light .header-left p{
+    color:#6b7280;
+}
+
+body.light .icon-box{
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+}
+
+body.light .icon-box i{
+    color:#111827;
+}
+
+body.light .online{
+    border:2px solid #ffffff;
+}
+
+body.light .add-task-box{
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+}
+
+body.light .add-task-box input{
+    color:#111827;
+}
+
+body.light .add-task-box input::placeholder{
+    color:#6b7280;
+}
+
+body.light .date-btn,
+body.light .add-task-box select{
+    background:#f3f4f6;
+    color:#111827;
+    border:1px solid #e5e7eb;
+}
+
+body.light .add-task-box option{
+    background:white;
+    color:black;
+}
+
+body.light .filter-btn{
+    background:white;
+    color:#111827;
+    border:1px solid #e5e7eb;
+}
+
+body.light .task-item{
+    background:white;
+    color:#111827;
+}
+
+body.light .task-item h4{
+    color:#111827;
+}
+
+body.light .progress-card,
+body.light .upcoming-card,
+body.light .settings-card{
+    background:white;
+    color:#111827;
+    border:1px solid #e5e7eb;
+}
+
+body.light .progress-card h3,
+body.light .upcoming-card h3,
+body.light .settings-card h3{
+    color:#111827;
+}
+
+body.light .progress-info strong{
+    color:#111827;
+}
+
+body.light .circle-progress::before{
+    background:white;
+}
+
+body.light .circle-progress span{
+    color:#111827;
+}
+
+body.light .upcoming-task{
+    background:#f3f4f6;
+}
+
+body.light .upcoming-task h4{
+    color:#111827;
+}
+
+body.light .stat-box{
+    background:#f3f4f6;
+}
+
+body.light .stat-box h4{
+    color:#111827;
+}
+
+body.light .setting-item select{
+    background:#f3f4f6;
+    color:#111827;
+}
+
+</style>
+</head>
+
+<body>
+<div class="sidebar">
+
+    <div class="logo">
+        <i class="fa-regular fa-clipboard-check"></i>
+        <span>To-Do List</span>
+    </div>
+
+    <ul class="menu">
+
+        <li>
+    <a href="#" id="allTasksBtn" class="active">
+        <div class="left">
+            <i class="fa-regular fa-calendar-check"></i>
+            All Tasks
+        </div>
+        <span class="count">7</span>
+    </a>
+</li>
+
+        <li>
+    <a href="#" id="pendingTasksBtn">
+        <div class="left">
+            <i class="fa-regular fa-clock"></i>
+            Pending
+        </div>
+        <span class="count">3</span>
+    </a>
+</li>
+        <li>
+    <a href="#" id="completedTasksBtn">
+        <div class="left">
+            <i class="fa-solid fa-check"></i>
+            Completed
+        </div>
+        <span class="count">2</span>
+    </a>
+</li>
+
+        <li>
+    <a href="#" id="importantTasksBtn">
+        <div class="left">
+            <i class="fa-regular fa-star"></i>
+            Important
+        </div>
+        <span class="count">2</span>
+    </a>
+</li>
+
+    </ul>
+
+
+    <ul class="menu">
+
+        <li>
+    <a href="#" id="todayBtn" onclick="filterTasks('today'); return false;">
+        <div class="left">
+            <i class="fa-regular fa-calendar"></i>
+            Today
+        </div>
+    </a>
+</li>
+
+       <li>
+    <a href="#" id="upcomingBtn" onclick="filterTasks('upcoming'); return false;">
+        <div class="left">
+            <i class="fa-regular fa-clock"></i>
+            Upcoming
+        </div>
+    </a>
+</li>
+
+    </ul>
+
+    <ul class="menu">
+
+        <li>
+    <a href="#" id="settingsBtn">
+        <div class="left">
+            <i class="fa-solid fa-gear"></i>
+            Settings
+        </div>
+    </a>
+</li>
+
+        <li>
+    <a href="#" id="helpBtn">
+        <div class="left">
+            <i class="fa-regular fa-circle-question"></i>
+            Help & Support
+        </div>
+    </a>
+</li>
+
+        <li>
+    <a href="#" id="logoutBtn">
+        <div class="left">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            Logout
+        </div>
+    </a>
+</li>
+
+    </ul>
+
+    <div class="dark-box">
+
+        <div>
+            <i class="fa-regular fa-moon"></i>
+            &nbsp; Dark Mode
+        </div>
+
+        <div class="toggle" onclick="toggleTheme()"></div>
+
+    </div>
+
+</div>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-left">
+        <h1 id="greeting"></h1>
+        <p>You have 3 pending tasks.</p>
+    </div>
+
+    <div class="header-right">
+
+        <!-- Search Icon -->
+<div class="icon-box" onclick="openSearch()">
+    <i class="fa-solid fa-magnifying-glass"></i>
+</div>
+
+<!-- Notification Icon -->
+<div class="icon-box notification" onclick="showNotifications()">
+    <i class="fa-regular fa-bell"></i>
+    <span class="badge">2</span>
+</div>
+
+
+        <!-- Profile -->
+        <div class="profile">
+            <img src="OIP.jpg" alt="Profile">
+            <span class="online"></span>
+        </div>
+
+    </div>
+</header>
+ 
+<div class="task-section">
+
+    <div class="left-content">
+
+    <!-- Add Task Box -->
+    <div class="add-task-box">
+
+        <input type="text" id="taskInput" placeholder="Add a new task...">
+        <input type="date" id="taskDate" hidden>
+
+        <button class="date-btn" onclick="openCalendar()">
+            <i class="fa-regular fa-calendar"></i>
+        </button>
+
+        <select>
+            <option>Priority</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+        </select>
+
+        <button class="add-btn" onclick="addTask()">
+            Add Task
+        </button>
+
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="task-filters">
+
+        <button class="filter-btn active" data-filter="all">
+            All (7)
+        </button>
+
+        <button class="filter-btn" data-filter="pending">
+            Pending (3)
+        </button>
+
+        <button class="filter-btn" data-filter="completed">
+            Completed (2)
+        </button>
+
+        <button class="filter-btn" data-filter="important">
+            Important (2)
+        </button>
+
+    </div>
+
+    <!-- Task List -->
+    <div id="task-list">
+
+        <div class="task-item pending important">
+            <h4>UI Design</h4>
+
+            <div class="task-actions">
+                <span class="priority high">High</span>
+
+                <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="task-item pending">
+            <h4>Database Setup</h4>
+
+            <div class="task-actions">
+                <span class="priority medium">Medium</span>
+
+                <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="task-item completed">
+            <h4>Homepage Design</h4>
+
+            <div class="task-actions">
+                <span class="priority low">Low</span>
+
+                <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="task-item completed important today">
+            <h4>Client Meeting</h4>
+
+            <div class="task-actions">
+                <span class="priority high">High</span>
+
+                <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="task-item pending">
+            <h4>API Integration</h4>
+
+            <div class="task-actions">
+                <span class="priority medium">Medium</span>
+
+                <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="task-item upcoming">
+            <h4>Team Meeting</h4>
+
+            <div class="task-actions">
+                <span class="priority high">High</span>
+
+                <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="task-item upcoming">
+            <h4>UI Revision</h4>
+
+            <div class="task-actions">
+                <span class="priority medium">Medium</span>
+
+                <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <!-- Task List End -->
+
+
+    <!-- Settings Card -->
+    <div class="settings-card" style="display:none;">
+
+        <h3>⚙ Settings</h3>
+
+        <div class="setting-group">
+            <h4>Profile Settings</h4>
+
+            <div class="setting-item">
+                <span>Change Name</span>
+                <button onclick="changeName()">Edit</button>
+            </div>
+
+            <div class="setting-item">
+                <span>Change Photo</span>
+                <button onclick="changePhoto()">Upload</button>
+                <input type="file" id="photoInput" hidden>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h4>Notification Settings</h4>
+
+            <div class="setting-item">
+                <span>Task Reminders</span>
+                <input type="checkbox" checked>
+            </div>
+
+            <div class="setting-item">
+                <span>Upcoming Task Alerts</span>
+                <input type="checkbox" checked>
+            </div>
+
+            <div class="setting-item">
+                <span>Daily Summary</span>
+                <input type="checkbox" checked>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h4>Task Settings</h4>
+
+            <div class="setting-item">
+                <span>Default Priority</span>
+
+                <select>
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <span>Auto Delete Completed Tasks</span>
+                <input type="checkbox">
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h4>Account Settings</h4>
+
+            <div class="setting-item">
+                <span>Change Password</span>
+                <button onclick="changePassword()">Change</button>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h4>About App</h4>
+
+            <p>To-Do List App</p>
+            <p>Version 1.0</p>
+            <p>Developed by Syeda Farwa Batool</p>
+        </div>
+
+    </div>
+    <!-- Settings Card End -->
+
+    <!-- Help & Support Card -->
+<div class="settings-card" id="helpCard" style="display:none;">
+
+    <h3>❓ Help & Support</h3>
+
+    <div class="setting-group">
+        <h4>Frequently Asked Questions</h4>
+
+        <p><strong>How to add a task?</strong></p>
+        <p>Type task name and click Add Task button.</p>
+
+        <br>
+
+        <p><strong>How to delete a task?</strong></p>
+        <p>Click the trash icon beside the task.</p>
+
+        <br>
+
+        <p><strong>How to change theme?</strong></p>
+        <p>Use Dark Mode toggle in sidebar.</p>
+    </div>
+
+    <div class="setting-group">
+        <h4>Contact Support</h4>
+
+        <div class="setting-item">
+            <span>Email Support</span>
+            <button onclick="window.location.href='mailto:support@todoapp.com'">
+                Contact
+            </button>
+        </div>
+
+        <div class="setting-item">
+            <span>Report Bug</span>
+            <button onclick="reportBug()">
+                Report
+            </button>
+        </div>
+    </div>
+
+</div>
+
+</div>
+<!-- Left Content End -->
+
+    <!-- RIGHT SIDE -->
+    <div class="progress-space">
+
+        <div class="right-panel">
+
+            <!-- Task Progress -->
+            <div class="progress-card">
+
+                <h3>Task Progress</h3>
+
+                <div class="circle-progress">
+                    <span>75%</span>
+                </div>
+
+                <div class="task-stats">
+
+                    <div class="stat-box">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Completed</span>
+                        <h4>2</h4>
+                    </div>
+
+                    <div class="stat-box">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>Pending</span>
+                        <h4>3</h4>
+                    </div>
+
+                    <div class="stat-box">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Total</span>
+                        <h4>5</h4>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Upcoming Tasks -->
+            <div class="upcoming-card">
+
+                <h3>Upcoming Tasks</h3>
+
+                <div class="upcoming-task">
+                    <h4>Team Meeting</h4>
+                    <span>Tomorrow - 5:00 PM</span>
+                </div>
+
+                <div class="upcoming-task">
+                    <h4>UI Revision</h4>
+                    <span>22 June - 10:00 AM</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function toggleTheme() {
+    document.body.classList.toggle("light");
+    document.querySelector(".toggle").classList.toggle("active");
+}
+
+function openSearch() {
+    let searchText = prompt("Search task:");
+
+    if (searchText) {
+        alert("Searching for: " + searchText);
+    }
+}
+
+function showNotifications() {
+    alert(
+        "Notifications:\n\n" +
+        "• Complete UI Design Task\n" +
+        "• Team Meeting at 5 PM"
+    );
+}
+
+function openCalendar() {
+    document.getElementById("taskDate").showPicker();
+}
+
+function addTask() {
+
+    let task = document.getElementById("taskInput").value;
+
+    if (task.trim() === "") {
+        alert("Please enter a task");
+        return;
+    }
+
+    alert("Task Added: " + task);
+
+    document.getElementById("taskInput").value = "";
+}
+
+/* FILTER BUTTONS */
+
+const buttons = document.querySelectorAll(".filter-btn");
+const tasks = document.querySelectorAll(".task-item");
+
+buttons.forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        let filter = btn.dataset.filter;
+
+        tasks.forEach(task => {
+
+            if (filter === "all") {
+                task.style.display = "flex";
+            }
+            else if (task.classList.contains(filter)) {
+                task.style.display = "flex";
+            }
+            else {
+                task.style.display = "none";
+            }
+
+        });
+
+    });
+
+});
+
+/* DELETE TASK */
+
+document.querySelectorAll(".delete-btn").forEach(btn => {
+
+    btn.addEventListener("click", function () {
+
+        this.closest(".task-item").remove();
+
+    });
+
+});
+
+/* SIDEBAR BUTTONS */
+
+document.getElementById("allTasksBtn").onclick = function(e){
+
+    e.preventDefault();
+
+    // Show task section again
+    document.querySelector(".add-task-box").style.display = "flex";
+    document.querySelector(".task-filters").style.display = "flex";
+    document.getElementById("task-list").style.display = "flex";
+    document.querySelector(".progress-space").style.display = "block";
+    document.getElementById("helpCard").style.display = "none";
+    document.querySelector(".add-task-box").style.display = "flex";
+
+    // Hide settings
+    document.querySelector(".settings-card").style.display = "none";
+
+    document.querySelector('[data-filter="all"]').click();
+};
+
+document.getElementById("pendingTasksBtn").onclick = function(e){
+    e.preventDefault();
+    document.querySelector('[data-filter="pending"]').click();
+};
+
+document.getElementById("completedTasksBtn").onclick = function(e){
+    e.preventDefault();
+    document.querySelector('[data-filter="completed"]').click();
+};
+
+document.getElementById("importantTasksBtn").onclick = function(e){
+    e.preventDefault();
+    document.querySelector('[data-filter="important"]').click();
+};
+
+document.getElementById("todayBtn").onclick = function(e){
+
+    e.preventDefault();
+
+    document.querySelector(".settings-card").style.display = "none";
+    document.querySelector(".task-filters").style.display = "flex";
+    document.querySelector(".progress-space").style.display = "block";
+    document.getElementById("task-list").style.display = "flex";
+
+    filterTasks("today");
+
+};
+
+document.getElementById("upcomingBtn").onclick = function(e){
+
+    e.preventDefault();
+
+    document.querySelector(".settings-card").style.display = "none";
+    document.querySelector(".task-filters").style.display = "flex";
+    document.querySelector(".progress-space").style.display = "block";
+    document.getElementById("task-list").style.display = "flex";
+
+    filterTasks("upcoming");
+
+};
+
+document.getElementById("helpBtn").onclick = function(e){
+
+    e.preventDefault();
+
+    document.querySelector(".settings-card").style.display = "none";
+
+    document.getElementById("helpCard").style.display = "block";
+
+    document.querySelector(".add-task-box").style.display = "none";
+    document.querySelector(".task-filters").style.display = "none";
+    document.getElementById("task-list").style.display = "none";
+    document.querySelector(".progress-space").style.display = "none";
+};
+
+document.getElementById("logoutBtn").onclick = function(e){
+
+    e.preventDefault();
+
+    let check = confirm("Are you sure you want to logout?");
+
+    if(check){
+
+        alert("Logged Out Successfully!");
+
+        // Redirect to Login Page
+        window.location.href = "login.html";
+
+    }
+
+};
+
+function filterTasks(type){
+
+    const tasks = document.querySelectorAll(".task-item");
+
+    tasks.forEach(task => {
+
+        if(type === "all"){
+            task.style.display = "flex";
+        }
+        else if(task.classList.contains(type)){
+            task.style.display = "flex";
+        }
+        else{
+            task.style.display = "none";
+        }
+
+    });
+
+}
+
+document.getElementById("settingsBtn").addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    // Hide all task content
+    document.querySelector(".add-task-box").style.display = "none";
+    document.querySelector(".task-filters").style.display = "none";
+    document.getElementById("task-list").style.display = "none";
+    document.querySelector(".progress-space").style.display = "none";
+
+    // Show settings
+    document.querySelector(".settings-card").style.display = "block";
+
+});
+
+function changeName() {
+
+    let newName = prompt("Enter New Name:");
+
+    if(newName){
+        document.querySelector(".header-left h1").innerHTML =
+        "Good Evening, " + newName + "! 🌙";
+    }
+}
+
+function changePhoto(){
+    document.getElementById("photoInput").click();
+}
+
+document.getElementById("photoInput").addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(file){
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+            document.querySelector(".profile img").src = e.target.result;
+        }
+
+        reader.readAsDataURL(file);
+    }
+});
+
+function changePassword(){
+
+    let oldPass = prompt("Enter Old Password:");
+    let newPass = prompt("Enter New Password:");
+
+    if(oldPass && newPass){
+        alert("Password Changed Successfully!");
+    }
+}
+
+function reportBug(){
+    let bug = prompt("Describe the issue:");
+
+    if(bug){
+        alert("Bug Report Submitted:\n\n" + bug);
+    }
+}
+
+function updateGreeting(){
+
+    let hour = new Date().getHours();
+
+    let message = "";
+
+    if(hour >= 5 && hour < 12){
+        message = "Good Morning, Syeda Farwa Batool! ☀️";
+    }
+    else if(hour >= 12 && hour < 18){
+        message = "Good Afternoon, Syeda Farwa Batool! 🌤️";
+    }
+    else if(hour >= 18 && hour < 22){
+        message = "Good Evening, Syeda Farwa Batool! 🌙";
+    }
+    else{
+        message = "Good Night, Syeda Farwa Batool! 🌜";
+    }
+
+    document.getElementById("greeting").innerText = message;
+}
+
+updateGreeting();
+
+const sidebarLinks = document.querySelectorAll(".menu a");
+
+sidebarLinks.forEach(link => {
+
+    link.addEventListener("click", function(){
+
+        sidebarLinks.forEach(item => {
+            item.classList.remove("active");
+        });
+
+        this.classList.add("active");
+
+    });
+
+});
+
+</script>
+</body>
+</html>

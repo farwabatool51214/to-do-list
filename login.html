@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do List Login & Signup</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* CSS YAHAN LIKHO */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#040c18;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:1300px;
+    min-height:700px;
+    background:#08111f;
+    border-radius:25px;
+    display:flex;
+    overflow:hidden;
+    box-shadow:0 0 30px rgba(0,0,0,.4);
+}
+
+.left-side{
+    width:40%;
+    background:linear-gradient(
+        135deg,
+        #08111f,
+        #040c18
+    );
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px;
+}
+
+.logo i{
+    font-size:80px;
+    color:#00d1a7;
+    margin-bottom:15px;
+}
+
+.logo h1{
+    color:white;
+    font-size:55px;
+}
+
+.logo h1 span{
+    color:#00d1a7;
+}
+
+.left-side p{
+    color:#b0b0b0;
+    font-size:20px;
+    margin-top:20px;
+    line-height:1.8;
+}
+
+.right-side{
+    width:60%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:30px;
+    padding:40px;
+}
+
+.login-box,
+.signup-box{
+    flex:1;
+    background:#0f1b2d;
+    padding:30px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.login-box h2,
+.signup-box h2{
+    color:#00d1a7;
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.login-box input,
+.signup-box input{
+    width:100%;
+    height:50px;
+    margin-bottom:15px;
+    background:#08111f;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    padding:0 15px;
+    color:white;
+    outline:none;
+}
+
+.login-box button,
+.signup-box button{
+    width:100%;
+    height:50px;
+    border:none;
+    border-radius:12px;
+    background:#00d1a7;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.login-box button:hover,
+.signup-box button:hover{
+    transform:translateY(-2px);
+}
+
+.top-tabs{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    gap:320px; /* distance between Login & Sign Up */
+    margin-bottom:25px;
+}
+
+.top-tabs h2{
+    color:#00d1a7;
+    font-size:30px;
+    font-weight:700;
+}
+
+.divider{
+    width:1px;
+    background:rgba(255,255,255,.15);
+    min-height:500px;
+}
+
+.login-box p,
+.signup-box p{
+    color:#9ca3af;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.todo-image{
+    margin-top:40px;
+}
+
+.todo-image img{
+    width:100%;
+    max-width:320px;
+}
+
+.right-side{
+    width:60%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:flex-start;
+    gap:30px;
+    padding:40px;
+}
+
+.todo-illustration{
+    width:220px;
+    height:220px;
+    position:relative;
+    margin-top:40px;
+}
+
+.paper{
+    width:170px;
+    height:200px;
+    background:white;
+    border-radius:15px;
+    position:absolute;
+    left:25px;
+    top:10px;
+}
+
+.paper::before{
+    content:"";
+    position:absolute;
+    top:30px;
+    left:25px;
+    width:110px;
+    height:3px;
+    background:#d1d5db;
+    box-shadow:
+    0 25px #d1d5db,
+    0 50px #d1d5db,
+    0 75px #d1d5db;
+}
+
+.check{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#00d1a7;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:absolute;
+    font-size:18px;
+}
+
+.check1{
+    top:20px;
+    right:0;
+}
+
+.check2{
+    top:80px;
+    right:-10px;
+}
+
+.check3{
+    top:140px;
+    right:5px;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<!-- HTML YAHAN LIKHO -->
+
+<div class="container">
+
+    <div class="left-side">
+
+        <div class="logo">
+            <i class="fa-solid fa-clipboard-check"></i>
+            <h1>To-Do List</h1>
+        </div>
+
+        <p>
+            Stay organized. Stay productive.<br>
+            Manage your tasks easily.
+        </p>
+          <!-- YAHAN ADD KARO -->
+    <div class="todo-illustration">
+        <div class="paper"></div>
+
+        <div class="check check1">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <div class="check check2">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <div class="check check3">
+            <i class="fa-solid fa-check"></i>
+        </div>
+    </div>
+
+    </div>
+
+    <div class="right-side">
+
+        <!-- UPPER LOGIN & SIGNUP HEADING -->
+    <div class="top-tabs">
+        <h2 class="active-tab">Login</h2>
+        <h2>Sign Up</h2>
+    </div>
+
+        <!-- Login Form -->
+        <div class="login-box">
+
+            <h2>Welcome Back!</h2>
+            <p>Login to your account</p>
+
+            <input type="email" id="loginEmail" placeholder="Enter Email">
+
+            <input type="password" id="loginPassword" placeholder="Enter Password">
+
+            <button onclick="loginUser()">Login</button>
+
+        </div>
+
+        <!-- Partition Line -->
+        <div class="divider"></div>
+
+        <!-- Signup Form -->
+        <div class="signup-box">
+
+            <h2>Create Account</h2>
+            <p>Sign up to get started</p>
+
+            <input type="text" id="signupName" placeholder="Full Name">
+
+            <input type="email" id="signupEmail" placeholder="Enter Email">
+
+            <input type="password" id="signupPassword" placeholder="Create Password">
+
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+
+            <button onclick="signupUser()">Sign Up</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// JavaScript YAHAN LIKHO
+
+
+function loginUser(){
+
+    let email = document.getElementById("loginEmail").value;
+    let password = document.getElementById("loginPassword").value;
+
+    if(email === "farwa@gmail.com" && password === "12345"){
+
+        window.location.href = "index.html";
+
+    }
+    else{
+
+        alert("Invalid Email or Password");
+
+    }
+
+} 
+
+function signupUser(){
+
+    let name = document.getElementById("signupName").value;
+    let email = document.getElementById("signupEmail").value;
+    let password = document.getElementById("signupPassword").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+
+    if(name === "" || email === "" || password === "" || confirmPassword === ""){
+        alert("Please fill all fields");
+        return;
+    }
+
+    if(password !== confirmPassword){
+        alert("Passwords do not match");
+        return;
+    }
+
+    // Direct open main page
+    window.location.href = "index.html";
+
+}
+
+</script>
+
+</body>
+</html>
